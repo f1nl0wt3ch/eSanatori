@@ -21,7 +21,7 @@ public class RealmDefinitions extends RealmObject {
     private String dateStr;
     @PrimaryKey
     private String word;
-    private RealmList<ResponseDefinition> realmDefinitions;
+    private RealmList<RealmDefinition> realmDefinitions;
 
     public String getWord() {
         return word;
@@ -35,11 +35,11 @@ public class RealmDefinitions extends RealmObject {
         this.dateStr = dateStr;
     }
 
-    public RealmList<ResponseDefinition> getRealmDefinitions() {
+    public RealmList<RealmDefinition> getRealmDefinitions() {
         return realmDefinitions;
     }
 
-    public void setRealmDefinitions(RealmList<ResponseDefinition> realmDefinitions) {
+    public void setRealmDefinitions(RealmList<RealmDefinition> realmDefinitions) {
         this.realmDefinitions = realmDefinitions;
     }
 

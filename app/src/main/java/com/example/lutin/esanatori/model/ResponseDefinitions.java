@@ -1,17 +1,20 @@
 package com.example.lutin.esanatori.model;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
+import java.util.List;
 
 /**
  * Created by Lutin on 8/23/17.
  */
 
-public class ResponseDefinitions extends RealmObject {
+public class ResponseDefinitions {
     private String word;
-    private RealmList<ResponseDefinition> definitions;
+    private List<ResponseDefinition> definitions;
 
-    public ResponseDefinitions(String word, RealmList<ResponseDefinition> definitions) {
+    public ResponseDefinitions(){
+        super();
+    }
+
+    public ResponseDefinitions(String word, List<ResponseDefinition> definitions) {
         this.word = word;
         this.definitions = definitions;
     }
@@ -24,11 +27,11 @@ public class ResponseDefinitions extends RealmObject {
         this.word = word;
     }
 
-    public RealmList<ResponseDefinition> getDefinitions() {
+    public List<ResponseDefinition> getDefinitions() {
         return definitions;
     }
 
-    public void setDefinitions(RealmList<ResponseDefinition> definitions) {
+    public void setDefinitions(List<ResponseDefinition> definitions) {
         this.definitions = definitions;
     }
 }

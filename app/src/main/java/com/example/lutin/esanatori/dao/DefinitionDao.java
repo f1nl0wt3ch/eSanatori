@@ -2,6 +2,7 @@ package com.example.lutin.esanatori.dao;
 
 import android.util.Log;
 
+import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 import static android.content.ContentValues.TAG;
@@ -23,7 +25,7 @@ public class DefinitionDao implements DefinitionDaoInterface {
 
     @Override
     public void open() {
-        realm.getDefaultConfiguration();
+        realm = Realm.getDefaultInstance();
         Log.d(TAG, "Open database connection");
     }
 
@@ -36,15 +38,19 @@ public class DefinitionDao implements DefinitionDaoInterface {
     @Override
     public void insertDefinitions(ResponseDefinitions response) {
         Log.d(TAG, "Create new definitions");
-        final RealmDefinitions realmDefinitions = new RealmDefinitions();
+        RealmDefinitions realmDefinitions = new RealmDefinitions();
+        RealmList<RealmDefinition> list = new RealmList<>();
+        for(int i=0; i < response.getDefinitions().size(); i++){
+            RealmDefinition realmDefinition = new RealmDefinition();
+            realmDefinition.setPartOfSpeech(response.getDefinitions().get(i).getPartOfSpeech());
+            realmDefinition.setDefinition(response.getDefinitions().get(i).getDefinition());
+            list.add(realmDefinition);
+        }
+        realmDefinitions.setRealmDefinitions(list);
         realmDefinitions.setWord(response.getWord());
-        realmDefinitions.setRealmDefinitions(response.getDefinitions());
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.insert(realmDefinitions);
-            }
-        });
+        realm.beginTransaction();
+        realm.copyToRealm(realmDefinitions);
+        realm.commitTransaction();
         Log.d(TAG, "New definitions was created successful");
     }
 

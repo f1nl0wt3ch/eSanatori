@@ -14,12 +14,13 @@ import android.widget.Toast;
 import com.example.lutin.esanatori.EsanatoriApplication;
 import com.example.lutin.esanatori.R;
 import com.example.lutin.esanatori.dao.DefinitionDao;
+import com.example.lutin.esanatori.dao.DefinitionDaoInterface;
 import com.example.lutin.esanatori.dapter.DefinitionsAdapter;
+import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinition;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
 import com.example.lutin.esanatori.service.WordsAPIService;
-import com.example.lutin.esanatori.view.DefinitionRecyclerView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,9 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
     /*Variables for adding data to recyclerview*/
     private RecyclerView.LayoutManager layoutManager;
-    private DefinitionDao dao;
+    private DefinitionDaoInterface dao = new DefinitionDao();
     private DefinitionsAdapter adapter;
     private RecyclerView recyclerView;
+    private RealmList<RealmDefinition> list;
 
 
     final static String APP_INFO = "eSanatori - Dinh Duc Thinh";
@@ -62,28 +64,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         apiService = EsanatoriApplication.getInstance().getWordsAPIService();
         word = (EditText) findViewById(R.id.enterWordText);
-        final Context context = getApplicationContext();
 
         searchBtn = (Button) findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (word.getText().length() == 0) {
-
+                String wordStr = word.getText().toString();
+                Log.d(TAG, wordStr);
+                if (wordStr.length() == 0) {
+                    Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, ERRORS.get(0), duration);
                     toast.show();
                 } else {
-                    dao.open();
-                    realmDefinitions = dao.isWordExist(word.toString());
+                    Log.d(TAG, "Connection successful "+dao.toString());
+                    realmDefinitions = dao.isWordExist(wordStr);
                     if(realmDefinitions != null){
-                        recyclerView = (RecyclerView) findViewById(R.id.definitionRecyclerView);
-                        layoutManager = new LinearLayoutManager(context);
-                        recyclerView.setLayoutManager(layoutManager);
-                        RealmList<ResponseDefinition> list = realmDefinitions.getRealmDefinitions();
-                        adapter = new DefinitionsAdapter(list, context);
-                        recyclerView.setAdapter(adapter);
+                        Log.d(TAG, "Word is exist");
+                        list = realmDefinitions.getRealmDefinitions();
+                        Context context = getApplicationContext();
+                        setupView(list,context);
                     } else {
+                        Context context = getApplicationContext();
                         Log.d(TAG, "This word is not exsit in database");
+                        fetchDefinitionThenStoreToRealm(wordStr, context);
                     }
                 }
             }
@@ -95,16 +98,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        dao.open();
+    }
+
+    private void setupView(RealmList<RealmDefinition> list, Context context){
+        recyclerView = (RecyclerView) findViewById(R.id.definitionRecyclerView);
+        layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        adapter = new DefinitionsAdapter(list, context);
+        recyclerView.setAdapter(adapter);
+        Log.d(TAG, "Show data to recyclerview");
     }
 
 
-    private void fetchDefinitionThenStoreToRealm(String wordStr) {
+    private void fetchDefinitionThenStoreToRealm(final String wordStr, final Context context) {
         responseDefinitionsCall = apiService.getDefinitions(wordStr);
         responseDefinitionsCall.enqueue(new Callback<ResponseDefinitions>() {
             @Override
             public void onResponse(Call<ResponseDefinitions> call, Response<ResponseDefinitions> response) {
-                if (response != null && response.isSuccessful() == true) {
+                if (response != null && response.isSuccessful()) {
                     responseDefinitions = response.body();
+                    for(ResponseDefinition rd : responseDefinitions.getDefinitions()){
+                        Log.d(TAG, rd.getDefinition());
+                    }
+                    //realmDefinitions.setWord(wordStr);
+                    RealmList<RealmDefinition> list = new RealmList<>();
+                    for(int i=0; i < responseDefinitions.getDefinitions().size(); i++){
+                        RealmDefinition realmDefinition = new RealmDefinition();
+                        realmDefinition.setPartOfSpeech(responseDefinitions.getDefinitions().get(i).getPartOfSpeech());
+                        realmDefinition.setDefinition(responseDefinitions.getDefinitions().get(i).getDefinition());
+                        list.add(realmDefinition);
+                    }
+                    setupView(list, context);
+                    Log.d(TAG, "Definitions määrä "+responseDefinitions.getDefinitions().size());
                     dao.insertDefinitions(responseDefinitions);
                 }
             }

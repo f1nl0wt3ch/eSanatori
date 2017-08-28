@@ -1,17 +1,15 @@
 package com.example.lutin.esanatori.model;
 
-import io.realm.RealmObject;
-
 /**
  * Created by Lutin on 8/23/17.
  */
 
-public class ResponseDefinition extends RealmObject {
+public class ResponseDefinition {
     private String definition;
     private String partOfSpeech;
 
     public ResponseDefinition() {
-        super();
+
     }
 
     public ResponseDefinition(String definition, String partOfSpeech) {

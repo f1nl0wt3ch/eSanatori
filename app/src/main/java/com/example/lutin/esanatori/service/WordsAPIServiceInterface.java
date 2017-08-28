@@ -14,7 +14,7 @@ import retrofit2.http.Path;
 
 public interface WordsAPIServiceInterface {
     @Headers({
-            "X-Mashape-Key: 3rh8GOvAdmmsh7zLta405ub1qZxQp19ak4kjsnVt9tVtvGjUlU",
+            "X-Mashape-Key:zSJ0lQwYhxmshbRe6hwAGx5SRWkbp1T4HLsjsnOJ6S60XD4RR2",
             "Accept:application/json"
     })
     @GET("words/{word}/definitions")

@@ -7,11 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.lutin.esanatori.R;
-import com.example.lutin.esanatori.model.ResponseDefinition;
+import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.viewholder.CustomViewHolder;
-import com.example.lutin.esanatori.viewholder.DefinitionViewHolder;
-
-import java.util.zip.Inflater;
 
 import io.realm.RealmList;
 
@@ -19,14 +16,22 @@ import io.realm.RealmList;
  * Created by Lutin on 8/21/17.
  */
 
-public class DefinitionsAdapter extends RecyclerView.Adapter<CustomViewHolder> {
+public class DefinitionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private RealmList<ResponseDefinition> responseDefinitions;
+    private RealmList<RealmDefinition> realmDefinitionRealmList;
     private Context context;
 
-    public DefinitionsAdapter(RealmList<ResponseDefinition> responseDefinitions, Context context) {
-        this.responseDefinitions = responseDefinitions;
+    public DefinitionsAdapter(RealmList<RealmDefinition> realmDefinitionRealmList, Context context) {
+        this.realmDefinitionRealmList = realmDefinitionRealmList;
         this.context = context;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        RealmDefinition realmDefinition = realmDefinitionRealmList.get(position);
+        ((CustomViewHolder) holder).type.setText(realmDefinition.getPartOfSpeech());
+        ((CustomViewHolder) holder).definition.setText(realmDefinition.getDefinition());
+
     }
 
     @Override
@@ -36,15 +41,9 @@ public class DefinitionsAdapter extends RecyclerView.Adapter<CustomViewHolder> {
         return viewHolder;
     }
 
-    @Override
-    public void onBindViewHolder(CustomViewHolder holder, int position) {
-        ResponseDefinition responseDefinition = responseDefinitions.get(position);
-        holder.getType().setText(responseDefinition.getPartOfSpeech());
-        holder.getDefinition().setText(responseDefinition.getDefinition());
-    }
 
     @Override
     public int getItemCount() {
-        return responseDefinitions.size();
+        return realmDefinitionRealmList.size();
     }
 }

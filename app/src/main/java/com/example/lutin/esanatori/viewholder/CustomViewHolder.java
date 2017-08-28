@@ -11,27 +11,12 @@ import com.example.lutin.esanatori.R;
  */
 
 public class CustomViewHolder extends RecyclerView.ViewHolder {
-    private TextView type;
-    private TextView definition;
+    public TextView type;
+    public TextView definition;
     public CustomViewHolder(View itemView) {
         super(itemView);
         this.type = (TextView) itemView.findViewById(R.id.typeTextView);
         this.definition = (TextView) itemView.findViewById(R.id.definitionTextView);
     }
 
-    public TextView getType() {
-        return type;
-    }
-
-    public void setType(TextView type) {
-        this.type = type;
-    }
-
-    public TextView getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(TextView definition) {
-        this.definition = definition;
-    }
 }
