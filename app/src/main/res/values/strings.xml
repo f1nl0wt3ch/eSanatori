@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">eSanatori</string>
+    <string name="welcome">Welcome to my eSanatori</string>
+    <string name="btnNewWord">New word</string>
+    <string name="btnOldWord">Old words</string>
+    <string name="btnTextSize">30dp</string>
+    <string name="btnTextStyle">bold</string>
+    <string name="btnAppInfoText">App Info</string>
+</resources>

@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.example.lutin.esanatori"
+        minSdkVersion 14
+        multiDexEnabled true
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+    }
+
+    dataBinding {
+        enabled = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+ext {
+    supportVersio = '25.3.1'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    /*Support resolution*/
+    compile 'io.reactivex:rxjava:1.3.0'
+
+    compile "com.android.support:design:$supportVersio"
+    compile "com.android.support:appcompat-v7:$supportVersio"
+    compile "com.android.support:support-v4:$supportVersio"
+
+    /*Controll layout and print data as a list*/
+    compile "com.android.support:recyclerview-v7:$supportVersio"
+    compile "com.android.support:cardview-v7:$supportVersio"
+
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    /*Support to fetch data from Rest API*/
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+
+    /*Support to JSON and XML datatype*/
+    compile "com.squareup.retrofit2:converter-jackson:2.3.0"
+    compile "com.fasterxml.jackson.core:jackson-core:2.9.0"
+
+}
