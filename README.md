@@ -15,6 +15,10 @@
 <img src="https://preview.ibb.co/gGxphQ/Screen_Shot_2017_09_01_at_12_49_51_AM.png"  />
 </p>
 
+# Link .apk
+<br>
+- https://drive.google.com/file/d/0BzKphyEtMqFJdjhBc2NJZVI4MEU/view?usp=sharing
+
 # Author
 - Dinh Duc Thinh
 - Student at <b>Haaga Helia University</b>
