@@ -6,6 +6,7 @@ import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -93,6 +94,18 @@ public class DefinitionDao implements DefinitionDaoInterface {
         Random rm = new Random();
         int row = rm.nextInt(size);
         return row;
+    }
+
+    @Override
+    public List<String> getListDate() {
+        realm.beginTransaction();
+        RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).distinct("dateStr");
+        realm.commitTransaction();
+        List<String> list = new ArrayList<>();
+        for(int i= 0; i< results.size(); i++){
+            list.add(results.get(i).getDateStr());
+        }
+        return list;
     }
 
     @Override

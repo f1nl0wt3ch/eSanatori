@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/allwordLayout"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:weightSum="10">
+
+    <CheckBox
+        android:id="@+id/dateCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:layout_marginRight="5dp"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:background="#888888"
+         />
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_weight="8"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:background="#00ff00"/>
+</LinearLayout>

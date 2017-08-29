@@ -36,6 +36,15 @@
         android:gravity="center"
         android:textSize="20dp"
         android:textColor="#228800"/>
+    <TextView
+        android:id="@+id/allwordTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:textSize="20dp"
+        android:padding="5dp"
+        />
     <!--Result linearlayout-->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -43,7 +52,6 @@
         android:layout_weight="100"
         android:gravity="top"
         android:padding="20dp">
-
 
 
         <android.support.v7.widget.RecyclerView

@@ -18,7 +18,7 @@ import io.realm.annotations.PrimaryKey;
 public class RealmDefinitions extends RealmObject {
 
     @Index
-    private String dateStr;
+    private String dateStr = getToday();
     @PrimaryKey
     private String word;
     private RealmList<RealmDefinition> realmDefinitions;
@@ -31,9 +31,6 @@ public class RealmDefinitions extends RealmObject {
         this.word = word;
     }
 
-    public void setDateStr(String dateStr) {
-        this.dateStr = dateStr;
-    }
 
     public RealmList<RealmDefinition> getRealmDefinitions() {
         return realmDefinitions;
@@ -47,8 +44,8 @@ public class RealmDefinitions extends RealmObject {
         return dateStr;
     }
 
-    public void setDateStr() {
-        this.dateStr = getToday();
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
     }
 
     public final String getToday() {

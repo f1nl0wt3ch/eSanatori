@@ -16,10 +16,10 @@ import com.example.lutin.esanatori.EsanatoriApplication;
 import com.example.lutin.esanatori.R;
 import com.example.lutin.esanatori.dao.DefinitionDao;
 import com.example.lutin.esanatori.dao.DefinitionDaoInterface;
+import com.example.lutin.esanatori.dapter.AllWordAdapter;
 import com.example.lutin.esanatori.dapter.DefinitionsAdapter;
 import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.model.RealmDefinitions;
-import com.example.lutin.esanatori.model.ResponseDefinition;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
 import com.example.lutin.esanatori.service.WordsAPIService;
 
@@ -27,14 +27,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.realm.RealmList;
-import okhttp3.Headers;
-import okhttp3.internal.http.HttpHeaders;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
+    private TextView allword;
     private TextView wordToday;
     private EditText word;
     private Button searchBtn;
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private DefinitionDaoInterface dao = new DefinitionDao();
     private DefinitionsAdapter adapter;
+    private AllWordAdapter allWordAdapter;
     private RecyclerView recyclerView;
     private RealmList<RealmDefinition> list;
 
@@ -75,12 +75,16 @@ public class MainActivity extends AppCompatActivity {
         word = (EditText) findViewById(R.id.enterWordText);
         wordToday = (TextView) findViewById(R.id.wordTextView);
         wordToday.setVisibility(View.INVISIBLE);
-
+        allword = (TextView) findViewById(R.id.allwordTextView);
+        allword.setVisibility(View.INVISIBLE);
         searchBtn = (Button) findViewById(R.id.searchBtn);
+
+
         // Search button click event handle
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                allword.setVisibility(View.INVISIBLE);
                 String wordStr = word.getText().toString();
                 Log.d(TAG, wordStr);
                 if (wordStr.length() == 0) {
@@ -95,8 +99,16 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "Word is exist");
                             list = realmDefinitions.getRealmDefinitions();
                             Context context = getApplicationContext();
-                            wordToday.setText("This word has "+list.size()+" definitions");
-                            setupView(list,context);
+                            if(list.size() == 1) {
+                                wordToday.setText("This word has " + list.size() + " definition");
+                                wordToday.setVisibility(View.VISIBLE);
+                                setupView(list,context);
+                            } else {
+                                wordToday.setText("This word has " + list.size() + " definitions");
+                                wordToday.setVisibility(View.VISIBLE);
+                                setupView(list,context);
+                            }
+
                         } else {
                             Context context = getApplicationContext();
                             Log.d(TAG, "This word is not exsit in database");
@@ -111,22 +123,44 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        //Handle random word button click event
         randomBtn = (Button) findViewById(R.id.randomWordBtn);
         randomBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                allword.setVisibility(View.INVISIBLE);
+                word.setText("");
                 int items = dao.findAllDefinitions().size();
                 int randomRow = dao.getRandomNumber(items);
                 Log.d("Items "+ items, "Random row "+randomRow);
                 realmDefinitions = dao.getRandom(randomRow);
                 Context context = getApplicationContext();
-                wordToday.setText("Your word today is "+ realmDefinitions.getWord().toUpperCase());
+                wordToday.setText("Your random word is "+ realmDefinitions.getWord().toUpperCase());
                 wordToday.setVisibility(View.VISIBLE);
                 setupView(realmDefinitions.getRealmDefinitions(), context);
             }
         });
+        // Handle my words button click event
+        mywordsBtn = (Button) findViewById(R.id.myWordBtn);
+        mywordsBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                wordToday.setVisibility(View.INVISIBLE);
+                List<String> dateList = dao.getListDate();
+                Log.d(TAG, "DATE is "+ dateList.get(0));
+                Context context = getApplicationContext();
+                if(dateList.size() == 1) {
+                    allword.setText("Your words has been collected in " + dateList.size() + " day");
+                    allword.setVisibility(View.VISIBLE);
+                    setupViewForMyWords(dateList, context);
+                } else {
+                    allword.setText("Your words has been collected in " + dateList.size() + " days");
+                    allword.setVisibility(View.VISIBLE);
+                    setupViewForMyWords(dateList, context);
+                }
 
-
+            }
+        });
     }
 
     @Override
@@ -143,6 +177,16 @@ public class MainActivity extends AppCompatActivity {
         adapter = new DefinitionsAdapter(list, context);
         recyclerView.setAdapter(adapter);
         Log.d(TAG, "Show data to recyclerview");
+    }
+
+    private void setupViewForMyWords(List<String> list, Context context){
+        recyclerView = (RecyclerView) findViewById(R.id.definitionRecyclerView);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        allWordAdapter = new AllWordAdapter(list, context);
+        recyclerView.setAdapter(allWordAdapter);
+        Log.d(TAG, "Show all date to recyclerview");
     }
 
 
@@ -163,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                             list.add(realmDefinition);
                         }
                         wordToday.setText("This word has "+list.size()+" definitions");
+                        wordToday.setVisibility(View.VISIBLE);
                         setupView(list, context);
                         Log.d(TAG, "Definitions määrä "+responseDefinitions.getDefinitions().size());
                         dao.insertDefinitions(responseDefinitions);
