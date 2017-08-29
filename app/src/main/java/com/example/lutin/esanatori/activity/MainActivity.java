@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupView(RealmList<RealmDefinition> list, Context context){
         recyclerView = (RecyclerView) findViewById(R.id.definitionRecyclerView);
-        layoutManager = new LinearLayoutManager(context);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         adapter = new DefinitionsAdapter(list, context);
