@@ -16,7 +16,6 @@
 </p>
 
 # Link .apk
-<br>
 - https://drive.google.com/file/d/0BzKphyEtMqFJdjhBc2NJZVI4MEU/view?usp=sharing
 
 # Author
