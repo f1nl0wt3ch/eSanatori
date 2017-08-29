@@ -12,6 +12,8 @@
 # Screenshot
 <br>
 <p align="center">
-<img src="https://ibb.co/bF1FNQ" width="350" />
+<img src="https://preview.ibb.co/gGxphQ/Screen_Shot_2017_09_01_at_12_49_51_AM.png"  />
 </p>
+
+
 
