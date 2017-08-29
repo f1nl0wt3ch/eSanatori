@@ -12,6 +12,6 @@
 # Screenshot
 <br>
 <p align="center">
-<img src="http://i120.photobucket.com/albums/o172/juneboy1984/Screen%20Shot%202017-09-01%20at%2012.49.51%20AM_zpseiriotf0.png" width="350" />
+<img src="https://ibb.co/bF1FNQ" width="350" />
 </p>
 
