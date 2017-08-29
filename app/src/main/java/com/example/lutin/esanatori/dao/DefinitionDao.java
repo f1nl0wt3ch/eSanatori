@@ -89,9 +89,10 @@ public class DefinitionDao implements DefinitionDaoInterface {
         return (list.size() == 0) ? null : list;
     }
 
-    final int getRandomNumber(int size) {
-        Random random = new Random(size);
-        return random.nextInt();
+    public int getRandomNumber(int size) {
+        Random rm = new Random();
+        int row = rm.nextInt(size);
+        return row;
     }
 
     @Override
@@ -105,7 +106,9 @@ public class DefinitionDao implements DefinitionDaoInterface {
     @Override
     public RealmDefinitions getRandom(int row) {
         Log.d(TAG, "Get random word from database ");
+        realm.beginTransaction();
         RealmResults<RealmDefinitions> list = realm.where(RealmDefinitions.class).findAll();
+        realm.commitTransaction();
         return list.get(row);
     }
 }

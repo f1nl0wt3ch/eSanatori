@@ -27,4 +27,6 @@ public interface DefinitionDaoInterface {
     public List<RealmDefinitions> findDefinitionsByDate(String date);
 
     public RealmDefinitions getRandom(int row);
+
+    public int getRandomNumber(int size);
 }

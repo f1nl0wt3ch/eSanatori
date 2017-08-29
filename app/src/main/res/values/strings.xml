@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">eSanatori</string>
     <string name="welcome">Welcome to my eSanatori</string>
-    <string name="btnNewWord">New word</string>
-    <string name="btnOldWord">Old words</string>
     <string name="btnTextSize">30dp</string>
     <string name="btnTextStyle">bold</string>
     <string name="btnAppInfoText">App Info</string>
+    <string name="randomBtn">Random Word</string>
+    <string name="searchBtn">Search</string>
+    <string name="mywordBtn">My words</string>
 </resources>
