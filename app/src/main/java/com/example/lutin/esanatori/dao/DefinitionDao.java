@@ -149,7 +149,7 @@ public class DefinitionDao implements DefinitionDaoInterface {
         realm.beginTransaction();
         RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).contains("dateStr", dateStr).findAll();
         realm.commitTransaction();
-        for(int i=0; i < results.size();i++){
+        for (int i = 0; i < results.size(); i++) {
             words.add(results.get(i).getWord());
         }
         return words;

@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
             "Oopps, your input is not a word",
             "No definitions found with given word, try another one!",
             "Oopps, you have not selected any date!",
-            "Your database is emty!"
+            "Your database is emty!",
+            "Thank you! the selected date has been removed"
     );
     int duration = Toast.LENGTH_LONG;
     private TextView allword;
@@ -139,9 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 allword.setVisibility(View.GONE);
                 deleteAllBtn.setVisibility(View.GONE);
                 deleteBtn.setVisibility(View.GONE);
-                word.setText("");
-                int items = dao.findAllDefinitions().size();
-                if (items == 0) {
+                if ( dao.findAllDefinitions() == null) {
                     Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, ERRORS.get(4), duration);
                     toast.show();
@@ -178,14 +177,15 @@ public class MainActivity extends AppCompatActivity {
                 selectDateTextView = (TextView) findViewById(selectedDate);
                 String selectedDateStr = selectDateTextView.getText().toString();
                 String[] selectedDate = selectedDateStr.split(",");
-                if (selectedDate.length == 0) {
+                if (selectedDate == null) {
                     Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, ERRORS.get(3), duration);
                     toast.show();
                 } else {
                     dao.deleteDenifitionsByDate(selectedDate);
+                    Toast toast = Toast.makeText(getApplicationContext(), ERRORS.get(5), duration);
+                    toast.show();
                 }
-                showMywords();
             }
         });
 
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void showMywords(){
+    public void showMywords() {
         List<String> dateList = dao.getListDate();
         Log.d(TAG, "DATE is " + dateList.get(0));
         Context context = getApplicationContext();

@@ -1,10 +1,7 @@
 package com.example.lutin.esanatori.dapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.StringBuilderPrinter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +20,9 @@ import java.util.List;
  */
 
 public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    static final List<String> selectedDate = new ArrayList<>();
     private List<String> dateList;
     private Context context;
-    static final List<String> selectedDate = new ArrayList<>();
     private DefinitionDaoInterface dao = new DefinitionDao();
 
     public AllWordAdapter(List<String> dateList, Context context) {
@@ -44,20 +41,20 @@ public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         dao.open();
         String dateStr = dateList.get(position);
-        ((AllWordViewHolder) holder).dateCheckBox.setText(dateStr+" [ "+dao.findWordsByDate(dateStr).size()+" words found ]");
-        ((AllWordViewHolder) holder).dateCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+        ((AllWordViewHolder) holder).dateCheckBox.setText(dateStr + " [ " + dao.findWordsByDate(dateStr).size() + " words found ]");
+        ((AllWordViewHolder) holder).dateCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     compoundButton.setChecked(true);
-                    selectedDate.add(compoundButton.getText().toString().substring(0,10));
-                }else {
+                    selectedDate.add(compoundButton.getText().toString().substring(0, 10));
+                } else {
                     compoundButton.setChecked(false);
-                    selectedDate.remove(compoundButton.getText().toString().substring(0,10));
+                    selectedDate.remove(compoundButton.getText().toString().substring(0, 10));
                 }
                 ((AllWordViewHolder) holder).selectedTextView.setText(convertArrayToString(selectedDate));
                 //Log.d("SelectedDate ", ((AllWordViewHolder) holder).selectedTextView.getText().toString());
-                            }
+            }
         });
 
 
@@ -68,12 +65,12 @@ public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return dateList.size();
     }
 
-    public String convertArrayToString(List<String> inputs){
+    public String convertArrayToString(List<String> inputs) {
         StringBuilder builderStr = new StringBuilder();
-        for(String input : inputs ){
+        for (String input : inputs) {
             builderStr.append(input);
             builderStr.append(",");
         }
-        return builderStr.toString().substring(0, builderStr.length()-1);
+        return builderStr.toString().substring(0, builderStr.length() - 1);
     }
 }
