@@ -1,7 +1,7 @@
 # eSanatori
 - This application is developed to help people quickly find definition of word. <br>
 # Used technologies 
-- LinearLayout, RecyclerView, Realm, WordsAPI, JSON, OkHttp, Retrofit..etc<br>
+- LinearLayout, RecyclerView, CardView, DataBinding, Realm, WordsAPI, JSON, OkHttp, Retrofit..etc<br>
 # Features
 - Check and validate user's input
 - Handle errors and give user warning alert
@@ -28,6 +28,5 @@
 - Dinh Duc Thinh
 - Student at <b>Haaga Helia University</b>
 - Software developer at <b>Bisnode Finland Oy</b>
-
 
 
