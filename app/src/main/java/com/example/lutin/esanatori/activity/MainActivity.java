@@ -145,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, ERRORS.get(4), duration);
                     toast.show();
                 } else {
-                    int randomRow = dao.getRandomNumber(items);
-                    Log.d("Items " + items, "Random row " + randomRow);
+                    int randomRow = dao.getRandomNumber(dao.findAllDefinitions().size());
+                    Log.d("Items " + dao.findAllDefinitions().size(), "Random row " + randomRow);
                     realmDefinitions = dao.getRandom(randomRow);
                     Context context = getApplicationContext();
                     wordToday.setText("Your random word is " + realmDefinitions.getWord().toUpperCase());
