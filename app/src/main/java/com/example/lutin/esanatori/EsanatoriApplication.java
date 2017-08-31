@@ -12,8 +12,12 @@ import io.realm.RealmConfiguration;
  */
 
 public class EsanatoriApplication extends MultiDexApplication {
-    private WordsAPIService wordsAPIService;
     private static EsanatoriApplication singleton;
+    private WordsAPIService wordsAPIService;
+
+    public static EsanatoriApplication getInstance() {
+        return singleton;
+    }
 
     @Override
     public void onCreate() {
@@ -22,10 +26,6 @@ public class EsanatoriApplication extends MultiDexApplication {
         Realm.init(this);
         Realm.setDefaultConfiguration(new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build());
         wordsAPIService = new WordsAPIService();
-    }
-
-    public static EsanatoriApplication getInstance() {
-        return singleton;
     }
 
     public WordsAPIService getWordsAPIService() {

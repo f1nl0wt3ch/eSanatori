@@ -2,31 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/definitionLayout"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:gravity="center"
-    >
+    android:layout_height="200dp"
+    android:gravity="center">
 
     <TextView
+        android:id="@+id/typeTextView"
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:id="@+id/typeTextView"
         android:layout_alignParentLeft="true"
+        android:layout_marginBottom="2dp"
+        android:background="#00FF00"
+        android:gravity="center"
         android:padding="2dp"
         android:textColor="#000000"
-        android:textSize="15dp"
-        android:gravity="center"
-        android:background="#00FF00"
-        android:layout_marginBottom="2dp"/>
+        android:textSize="15dp" />
 
     <TextView
+        android:id="@+id/definitionTextView"
         android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:id="@+id/definitionTextView"
+        android:layout_marginBottom="2dp"
         android:layout_toRightOf="@+id/typeTextView"
+        android:background="#00FF88"
+        android:gravity="center"
         android:padding="5dp"
         android:textColor="#000000"
-        android:textSize="15dp"
-        android:gravity="center"
-        android:background="#00FF88"
-        android:layout_marginBottom="2dp"/>
+        android:textSize="15dp" />
 </LinearLayout>

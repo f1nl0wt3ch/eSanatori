@@ -13,6 +13,7 @@ import com.example.lutin.esanatori.R;
 public class CustomViewHolder extends RecyclerView.ViewHolder {
     public TextView type;
     public TextView definition;
+
     public CustomViewHolder(View itemView) {
         super(itemView);
         this.type = (TextView) itemView.findViewById(R.id.typeTextView);

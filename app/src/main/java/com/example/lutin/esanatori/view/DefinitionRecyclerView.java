@@ -13,45 +13,8 @@ import android.util.AttributeSet;
 
 public class DefinitionRecyclerView extends RecyclerView {
 
-    public interface LoadMoreListener {
-        void shouldLoadMore();
-    }
-
     private int triggerLimit = 1;
     private LoadMoreListener listener;
-
-    public void setTriggerLimit(int triggerLimit) {
-        this.triggerLimit = triggerLimit;
-    }
-
-    public void setListener(LoadMoreListener listener) {
-        this.listener = listener;
-    }
-
-    public DefinitionRecyclerView(Context context) {
-        super(context);
-    }
-
-    public DefinitionRecyclerView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public DefinitionRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        addOnScrollListener(scrollListener);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        super.onAttachedToWindow();
-    }
-
     private final OnScrollListener scrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int state) {
@@ -72,6 +35,37 @@ public class DefinitionRecyclerView extends RecyclerView {
         }
     };
 
+    public DefinitionRecyclerView(Context context) {
+        super(context);
+    }
+
+    public DefinitionRecyclerView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public DefinitionRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    public void setTriggerLimit(int triggerLimit) {
+        this.triggerLimit = triggerLimit;
+    }
+
+    public void setListener(LoadMoreListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        addOnScrollListener(scrollListener);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        super.onAttachedToWindow();
+    }
 
     public int getLastVisibleItemPosition() {
         if (getLayoutManager() instanceof LinearLayoutManager) {
@@ -81,6 +75,11 @@ public class DefinitionRecyclerView extends RecyclerView {
         } else {
             return 0;
         }
+    }
+
+
+    public interface LoadMoreListener {
+        void shouldLoadMore();
     }
 
 

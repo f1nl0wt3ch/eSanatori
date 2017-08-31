@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
 import com.example.lutin.esanatori.service.WordsAPIService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,22 +36,32 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
+    final static String regex = "[a-zA-Z]+";
+    final static String APP_INFO = "eSanatori - Dinh Duc Thinh";
+    final static List<String> ERRORS = Arrays.asList(
+            "Oopps, you have not entered word yet, please enter any word",
+            "Oopps, your input is not a word",
+            "No definitions found with given word, try another one!",
+            "Oopps, you have not selected any date!",
+            "Your database is emty!"
+    );
+    int duration = Toast.LENGTH_LONG;
     private TextView allword;
     private TextView wordToday;
     private EditText word;
     private Button searchBtn;
     private Button randomBtn;
     private Button mywordsBtn;
-
+    private Button deleteBtn;
+    private Button deleteAllBtn;
+    private CheckBox dateCB;
+    private LinearLayout deleteLayout;
     private String KEYWORD = "bump";
     private String TAG = "WordsAPI";
     private WordsAPIService apiService;
     private Call<ResponseDefinitions> responseDefinitionsCall;
     private ResponseDefinitions responseDefinitions;
-    int duration = Toast.LENGTH_LONG;
     private RealmDefinitions realmDefinitions;
-    final static String regex = "[a-zA-Z]+";
-
     /*Variables for adding data to recyclerview*/
     private RecyclerView.LayoutManager layoutManager;
     private DefinitionDaoInterface dao = new DefinitionDao();
@@ -57,16 +70,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RealmList<RealmDefinition> list;
 
-
-    final static String APP_INFO = "eSanatori - Dinh Duc Thinh";
-    final static List<String> ERRORS = Arrays.asList(
-            "Oopps, you have not entered word yet, please enter any word",
-            "Oopps, your input is not a word",
-            "No definitions found with given word, try another one!"
-    );
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,17 +77,25 @@ public class MainActivity extends AppCompatActivity {
         apiService = EsanatoriApplication.getInstance().getWordsAPIService();
         word = (EditText) findViewById(R.id.enterWordText);
         wordToday = (TextView) findViewById(R.id.wordTextView);
-        wordToday.setVisibility(View.INVISIBLE);
+        wordToday.setVisibility(View.GONE);
         allword = (TextView) findViewById(R.id.allwordTextView);
-        allword.setVisibility(View.INVISIBLE);
+        allword.setVisibility(View.GONE);
         searchBtn = (Button) findViewById(R.id.searchBtn);
+        deleteBtn = (Button) findViewById(R.id.deleteBtn);
+        deleteBtn.setVisibility(View.GONE);
+        deleteLayout = (LinearLayout) findViewById(R.id.definitionLayout);
+        //deleteLayout.setVisibility(View.GONE);
+        deleteAllBtn = (Button) findViewById(R.id.deleteAllBtn);
+        deleteAllBtn.setVisibility(View.GONE);
 
 
         // Search button click event handle
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allword.setVisibility(View.INVISIBLE);
+                allword.setVisibility(View.GONE);
+                deleteAllBtn.setVisibility(View.GONE);
+                deleteBtn.setVisibility(View.GONE);
                 String wordStr = word.getText().toString();
                 Log.d(TAG, wordStr);
                 if (wordStr.length() == 0) {
@@ -92,21 +103,21 @@ public class MainActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, ERRORS.get(0), duration);
                     toast.show();
                 } else {
-                    if(wordStr.matches(regex)){
-                        Log.d(TAG, "Connection successful "+dao.toString());
+                    if (wordStr.matches(regex)) {
+                        Log.d(TAG, "Connection successful " + dao.toString());
                         realmDefinitions = dao.isWordExist(wordStr);
-                        if(realmDefinitions != null){
+                        if (realmDefinitions != null) {
                             Log.d(TAG, "Word is exist");
                             list = realmDefinitions.getRealmDefinitions();
                             Context context = getApplicationContext();
-                            if(list.size() == 1) {
+                            if (list.size() == 1) {
                                 wordToday.setText("This word has " + list.size() + " definition");
                                 wordToday.setVisibility(View.VISIBLE);
-                                setupView(list,context);
+                                setupView(list, context);
                             } else {
                                 wordToday.setText("This word has " + list.size() + " definitions");
                                 wordToday.setVisibility(View.VISIBLE);
-                                setupView(list,context);
+                                setupView(list, context);
                             }
 
                         } else {
@@ -125,31 +136,42 @@ public class MainActivity extends AppCompatActivity {
         });
         //Handle random word button click event
         randomBtn = (Button) findViewById(R.id.randomWordBtn);
-        randomBtn.setOnClickListener(new View.OnClickListener(){
+        randomBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allword.setVisibility(View.INVISIBLE);
+                allword.setVisibility(View.GONE);
+                deleteAllBtn.setVisibility(View.GONE);
+                deleteBtn.setVisibility(View.GONE);
                 word.setText("");
                 int items = dao.findAllDefinitions().size();
-                int randomRow = dao.getRandomNumber(items);
-                Log.d("Items "+ items, "Random row "+randomRow);
-                realmDefinitions = dao.getRandom(randomRow);
-                Context context = getApplicationContext();
-                wordToday.setText("Your random word is "+ realmDefinitions.getWord().toUpperCase());
-                wordToday.setVisibility(View.VISIBLE);
-                setupView(realmDefinitions.getRealmDefinitions(), context);
+                if (items == 0) {
+                    Context context = getApplicationContext();
+                    Toast toast = Toast.makeText(context, ERRORS.get(4), duration);
+                    toast.show();
+                } else {
+                    int randomRow = dao.getRandomNumber(items);
+                    Log.d("Items " + items, "Random row " + randomRow);
+                    realmDefinitions = dao.getRandom(randomRow);
+                    Context context = getApplicationContext();
+                    wordToday.setText("Your random word is " + realmDefinitions.getWord().toUpperCase());
+                    wordToday.setVisibility(View.VISIBLE);
+                    setupView(realmDefinitions.getRealmDefinitions(), context);
+                }
+
             }
         });
         // Handle my words button click event
         mywordsBtn = (Button) findViewById(R.id.myWordBtn);
-        mywordsBtn.setOnClickListener(new View.OnClickListener(){
+        mywordsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                wordToday.setVisibility(View.INVISIBLE);
+                wordToday.setVisibility(View.GONE);
+                deleteAllBtn.setVisibility(View.VISIBLE);
+                deleteBtn.setVisibility(View.VISIBLE);
                 List<String> dateList = dao.getListDate();
-                Log.d(TAG, "DATE is "+ dateList.get(0));
+                Log.d(TAG, "DATE is " + dateList.get(0));
                 Context context = getApplicationContext();
-                if(dateList.size() == 1) {
+                if (dateList.size() == 1) {
                     allword.setText("Your words has been collected in " + dateList.size() + " day");
                     allword.setVisibility(View.VISIBLE);
                     setupViewForMyWords(dateList, context);
@@ -158,9 +180,46 @@ public class MainActivity extends AppCompatActivity {
                     allword.setVisibility(View.VISIBLE);
                     setupViewForMyWords(dateList, context);
                 }
-
             }
         });
+
+        // Handle delete button
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> dateList = dao.getListDate();
+                List<String> selectedDate = getSelectedCheckbox(dateList);
+                if (selectedDate.size() == 0) {
+                    Context context = getApplicationContext();
+                    Toast toast = Toast.makeText(context, ERRORS.get(3), duration);
+                    toast.show();
+                } else {
+                    dao.deleteDenifitionsByDate(selectedDate);
+                }
+            }
+        });
+
+        // Hanlde delete all database button
+        deleteAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dao.clearDatabase();
+            }
+        });
+
+    }
+
+    public List<String> getSelectedCheckbox(List<String> items) {
+        dateCB = (CheckBox) findViewById(R.id.dateCheckBox);
+        boolean selected = dateCB.isChecked();
+        List<String> selectedList = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (selected) {
+                String dateSelected = dateCB.getText().toString();
+                selectedList.add(dateSelected);
+            }
+        }
+        return selectedList;
     }
 
     @Override
@@ -169,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         dao.open();
     }
 
-    private void setupView(RealmList<RealmDefinition> list, Context context){
+    private void setupView(RealmList<RealmDefinition> list, Context context) {
         recyclerView = (RecyclerView) findViewById(R.id.definitionRecyclerView);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -179,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Show data to recyclerview");
     }
 
-    private void setupViewForMyWords(List<String> list, Context context){
+    private void setupViewForMyWords(List<String> list, Context context) {
         recyclerView = (RecyclerView) findViewById(R.id.definitionRecyclerView);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -197,21 +256,21 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseDefinitions> call, Response<ResponseDefinitions> response) {
                 if (response != null & response.isSuccessful()) {
                     responseDefinitions = response.body();
-                    Log.d(TAG, "reponse message "+ response.headers().hashCode());
+                    Log.d(TAG, "reponse message " + response.headers().hashCode());
 
-                        RealmList<RealmDefinition> list = new RealmList<>();
-                        for(int i=0; i < responseDefinitions.getDefinitions().size(); i++){
-                            RealmDefinition realmDefinition = new RealmDefinition();
-                            realmDefinition.setPartOfSpeech(responseDefinitions.getDefinitions().get(i).getPartOfSpeech());
-                            realmDefinition.setDefinition(responseDefinitions.getDefinitions().get(i).getDefinition());
-                            list.add(realmDefinition);
-                        }
-                        wordToday.setText("This word has "+list.size()+" definitions");
-                        wordToday.setVisibility(View.VISIBLE);
-                        setupView(list, context);
-                        Log.d(TAG, "Definitions määrä "+responseDefinitions.getDefinitions().size());
-                        dao.insertDefinitions(responseDefinitions);
-                    } else {
+                    RealmList<RealmDefinition> list = new RealmList<>();
+                    for (int i = 0; i < responseDefinitions.getDefinitions().size(); i++) {
+                        RealmDefinition realmDefinition = new RealmDefinition();
+                        realmDefinition.setPartOfSpeech(responseDefinitions.getDefinitions().get(i).getPartOfSpeech());
+                        realmDefinition.setDefinition(responseDefinitions.getDefinitions().get(i).getDefinition());
+                        list.add(realmDefinition);
+                    }
+                    wordToday.setText("This word has " + list.size() + " definitions");
+                    wordToday.setVisibility(View.VISIBLE);
+                    setupView(list, context);
+                    Log.d(TAG, "Definitions määrä " + responseDefinitions.getDefinitions().size());
+                    dao.insertDefinitions(responseDefinitions);
+                } else {
                     Toast toast = Toast.makeText(context, ERRORS.get(2), duration);
                     toast.show();
                 }

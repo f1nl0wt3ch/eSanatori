@@ -31,4 +31,8 @@ public interface DefinitionDaoInterface {
     public int getRandomNumber(int size);
 
     public List<String> getListDate();
+
+    public void deleteDenifitionsByDate(List<String> dateList);
+
+    public void clearDatabase();
 }

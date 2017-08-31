@@ -41,7 +41,7 @@ public class DefinitionDao implements DefinitionDaoInterface {
         Log.d(TAG, "Create new definitions");
         RealmDefinitions realmDefinitions = new RealmDefinitions();
         RealmList<RealmDefinition> list = new RealmList<>();
-        for(int i=0; i < response.getDefinitions().size(); i++){
+        for (int i = 0; i < response.getDefinitions().size(); i++) {
             RealmDefinition realmDefinition = new RealmDefinition();
             realmDefinition.setPartOfSpeech(response.getDefinitions().get(i).getPartOfSpeech());
             realmDefinition.setDefinition(response.getDefinitions().get(i).getDefinition());
@@ -102,7 +102,7 @@ public class DefinitionDao implements DefinitionDaoInterface {
         RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).distinct("dateStr");
         realm.commitTransaction();
         List<String> list = new ArrayList<>();
-        for(int i= 0; i< results.size(); i++){
+        for (int i = 0; i < results.size(); i++) {
             list.add(results.get(i).getDateStr());
         }
         return list;
@@ -123,5 +123,23 @@ public class DefinitionDao implements DefinitionDaoInterface {
         RealmResults<RealmDefinitions> list = realm.where(RealmDefinitions.class).findAll();
         realm.commitTransaction();
         return list.get(row);
+    }
+
+    @Override
+    public void deleteDenifitionsByDate(List<String> dateList) {
+        realm.beginTransaction();
+        for (String date : dateList) {
+            RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).contains("dateStr", date).findAll();
+            results.deleteAllFromRealm();
+            Log.d("This date ", date + " has been deleted");
+        }
+        realm.commitTransaction();
+    }
+
+    public void clearDatabase() {
+        realm.beginTransaction();
+        RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).findAll();
+        results.deleteAllFromRealm();
+        realm.commitTransaction();
     }
 }

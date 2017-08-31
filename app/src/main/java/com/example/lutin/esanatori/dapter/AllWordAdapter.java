@@ -34,8 +34,8 @@ public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         String dateStr = dateList.get(position);
-        ((AllWordViewHolder) holder).dateTextView.setText(dateStr);
-        //((AllWordViewHolder) holder ).dateCheckBox.
+        //((AllWordViewHolder) holder).dateTextView.setText(dateStr);
+        ((AllWordViewHolder) holder).dateCheckBox.setText(dateStr);
     }
 
     @Override

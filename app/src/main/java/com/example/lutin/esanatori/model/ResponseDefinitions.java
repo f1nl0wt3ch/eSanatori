@@ -10,7 +10,7 @@ public class ResponseDefinitions {
     private String word;
     private List<ResponseDefinition> definitions;
 
-    public ResponseDefinitions(){
+    public ResponseDefinitions() {
         super();
     }
 

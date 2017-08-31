@@ -51,15 +51,6 @@ public class WordsAPIService {
 
     }
 
-    public Call<ResponseDefinitions> getDefinitions(String word) {
-        return serviceInterface.getDefinitions(word);
-    }
-
-
-    public void setClient(OkHttpClient client) {
-        this.client = client;
-    }
-
     private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
@@ -100,5 +91,13 @@ public class WordsAPIService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Call<ResponseDefinitions> getDefinitions(String word) {
+        return serviceInterface.getDefinitions(word);
+    }
+
+    public void setClient(OkHttpClient client) {
+        this.client = client;
     }
 }
