@@ -20,9 +20,9 @@
 - https://drive.google.com/file/d/0BzKphyEtMqFJdjhBc2NJZVI4MEU/view?usp=sharing
 
 # Test
-- First you have to build your database by search some words
+- First you have to build your database by searching some words
 - Then you can use another features better
-- You can also change your system time after searching to get diffent date
+- You can also change your system time after searching to get different date
 
 # Author
 - Dinh Duc Thinh
