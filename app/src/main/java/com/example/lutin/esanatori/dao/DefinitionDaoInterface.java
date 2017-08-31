@@ -35,4 +35,6 @@ public interface DefinitionDaoInterface {
     public void deleteDenifitionsByDate(List<String> dateList);
 
     public void clearDatabase();
+
+    public List<String> findWordsByDate(String dateStr);
 }

@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         apiService = EsanatoriApplication.getInstance().getWordsAPIService();
         word = (EditText) findViewById(R.id.enterWordText);
         wordToday = (TextView) findViewById(R.id.wordTextView);
@@ -170,16 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 deleteBtn.setVisibility(View.VISIBLE);
                 List<String> dateList = dao.getListDate();
                 Log.d(TAG, "DATE is " + dateList.get(0));
-                Context context = getApplicationContext();
-                if (dateList.size() == 1) {
-                    allword.setText("Your words has been collected in " + dateList.size() + " day");
-                    allword.setVisibility(View.VISIBLE);
-                    setupViewForMyWords(dateList, context);
-                } else {
-                    allword.setText("Your words has been collected in " + dateList.size() + " days");
-                    allword.setVisibility(View.VISIBLE);
-                    setupViewForMyWords(dateList, context);
-                }
+                showMywords();
             }
         });
 
@@ -187,15 +179,16 @@ public class MainActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<String> dateList = dao.getListDate();
-                List<String> selectedDate = getSelectedCheckbox(dateList);
+                List<String> selectedDate = getSelectedCheckbox(dao.getListDate());
                 if (selectedDate.size() == 0) {
+                    Log.d("Checkbox value is ",selectedDate.toString());
                     Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, ERRORS.get(3), duration);
                     toast.show();
                 } else {
                     dao.deleteDenifitionsByDate(selectedDate);
                 }
+                showMywords();
             }
         });
 
@@ -210,16 +203,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<String> getSelectedCheckbox(List<String> items) {
+        final List<String> selectedList = new ArrayList<>();
         dateCB = (CheckBox) findViewById(R.id.dateCheckBox);
-        boolean selected = dateCB.isChecked();
-        List<String> selectedList = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
-            if (selected) {
-                String dateSelected = dateCB.getText().toString();
-                selectedList.add(dateSelected);
+            boolean checked = dateCB.isChecked();
+            if(checked){
+                selectedList.add(dateCB.getText().toString().replaceAll(" ","").substring(0,10));
             }
         }
         return selectedList;
+    }
+
+    public void showMywords(){
+        List<String> dateList = dao.getListDate();
+        Log.d(TAG, "DATE is " + dateList.get(0));
+        Context context = getApplicationContext();
+        if (dateList.size() == 1) {
+            allword.setText("Your words has been collected in " + dateList.size() + " day");
+            allword.setVisibility(View.VISIBLE);
+            setupViewForMyWords(dateList, context);
+        } else {
+            allword.setText("Your words has been collected in " + dateList.size() + " days");
+            allword.setVisibility(View.VISIBLE);
+            setupViewForMyWords(dateList, context);
+        }
     }
 
     @Override

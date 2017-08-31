@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/allwordLayout"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:weightSum="10">
 
@@ -18,19 +18,4 @@
         android:background="#00ff00"
         android:gravity="center"
         android:textAlignment="center" />
-
-    <!--<TextView
-        android:id="@+id/dateTextView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_weight="8"
-        android:background="#00ff00"
-        android:gravity="center"
-        android:padding="5dp"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="20dp"
-        android:textStyle="bold" />-->
 </LinearLayout>
