@@ -2,6 +2,7 @@ package com.example.lutin.esanatori.dao;
 
 import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
+import com.example.lutin.esanatori.model.WordDetail;
 
 import java.util.List;
 
@@ -37,4 +38,6 @@ public interface DefinitionDaoInterface {
     public void clearDatabase();
 
     public List<String> findWordsByDate(String dateStr);
+
+    public List<WordDetail> findDetailsByDate(String[] dateList);
 }

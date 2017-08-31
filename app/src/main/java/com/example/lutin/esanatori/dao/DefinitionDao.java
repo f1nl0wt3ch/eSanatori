@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
+import com.example.lutin.esanatori.model.WordDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,5 +154,26 @@ public class DefinitionDao implements DefinitionDaoInterface {
             words.add(results.get(i).getWord());
         }
         return words;
+    }
+
+    @Override
+    public List<WordDetail> findDetailsByDate(String[] dateList) {
+        List<List<RealmDefinitions>> list = new ArrayList<>();
+        List<WordDetail> wordDetails = new ArrayList<>();
+        realm.beginTransaction();
+        for (String dateStr : dateList) {
+            RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).contains("dateStr", dateStr).findAll();
+            list.add(results);
+        }
+        realm.commitTransaction();
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).size(); j++) {
+                WordDetail wordDetail = new WordDetail();
+                wordDetail.setWord(list.get(i).get(j).getWord());
+                wordDetail.setDetail(list.get(i).get(j).getRealmDefinitions().size() + " definitions | " + " search on " + list.get(i).get(j).getDateStr());
+                wordDetails.add(wordDetail);
+            }
+        }
+        return wordDetails;
     }
 }

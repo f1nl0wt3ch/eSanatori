@@ -18,9 +18,11 @@ import com.example.lutin.esanatori.dao.DefinitionDao;
 import com.example.lutin.esanatori.dao.DefinitionDaoInterface;
 import com.example.lutin.esanatori.dapter.AllWordAdapter;
 import com.example.lutin.esanatori.dapter.DefinitionsAdapter;
+import com.example.lutin.esanatori.dapter.DetailsBindingAdapter;
 import com.example.lutin.esanatori.model.RealmDefinition;
 import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
+import com.example.lutin.esanatori.model.WordDetail;
 import com.example.lutin.esanatori.service.WordsAPIService;
 
 import java.util.Arrays;
@@ -67,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
     private DefinitionsAdapter adapter;
     private AllWordAdapter allWordAdapter;
     private RecyclerView recyclerView;
+    private RecyclerView binderRecyclerView;
     private RealmList<RealmDefinition> list;
+    private DetailsBindingAdapter binderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,17 +99,14 @@ public class MainActivity extends AppCompatActivity {
                 deleteAllBtn.setVisibility(View.GONE);
                 deleteBtn.setVisibility(View.GONE);
                 String wordStr = word.getText().toString();
-                Log.d(TAG, wordStr);
                 if (wordStr.length() == 0) {
                     Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, ERRORS.get(0), duration);
                     toast.show();
                 } else {
                     if (wordStr.matches(regex)) {
-                        Log.d(TAG, "Connection successful " + dao.toString());
                         realmDefinitions = dao.isWordExist(wordStr);
                         if (realmDefinitions != null) {
-                            Log.d(TAG, "Word is exist");
                             list = realmDefinitions.getRealmDefinitions();
                             Context context = getApplicationContext();
                             if (list.size() == 1) {
@@ -120,12 +121,10 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             Context context = getApplicationContext();
-                            Log.d(TAG, "This word is not exsit in database");
                             fetchDefinitionThenStoreToRealm(wordStr, context);
                         }
                     } else {
-                        Context context = getApplicationContext();
-                        Toast toast = Toast.makeText(context, ERRORS.get(1), duration);
+                        Toast toast = Toast.makeText(getApplicationContext(), ERRORS.get(1), duration);
                         toast.show();
                     }
 
@@ -140,18 +139,17 @@ public class MainActivity extends AppCompatActivity {
                 allword.setVisibility(View.GONE);
                 deleteAllBtn.setVisibility(View.GONE);
                 deleteBtn.setVisibility(View.GONE);
-                if ( dao.findAllDefinitions() == null) {
-                    Context context = getApplicationContext();
-                    Toast toast = Toast.makeText(context, ERRORS.get(4), duration);
-                    toast.show();
-                } else {
+
+                try {
                     int randomRow = dao.getRandomNumber(dao.findAllDefinitions().size());
-                    Log.d("Items " + dao.findAllDefinitions().size(), "Random row " + randomRow);
                     realmDefinitions = dao.getRandom(randomRow);
                     Context context = getApplicationContext();
                     wordToday.setText("Your random word is " + realmDefinitions.getWord().toUpperCase());
                     wordToday.setVisibility(View.VISIBLE);
                     setupView(realmDefinitions.getRealmDefinitions(), context);
+                } catch (Exception e){
+                    Toast toast = Toast.makeText(getApplicationContext(), ERRORS.get(4), duration);
+                    toast.show();
                 }
 
             }
@@ -164,9 +162,13 @@ public class MainActivity extends AppCompatActivity {
                 wordToday.setVisibility(View.GONE);
                 deleteAllBtn.setVisibility(View.VISIBLE);
                 deleteBtn.setVisibility(View.VISIBLE);
-                List<String> dateList = dao.getListDate();
-                Log.d(TAG, "DATE is " + dateList.get(0));
-                showMywords();
+                try {
+                    List<String> dateList = dao.getListDate();
+                    showMywords();
+                } catch (Exception e) {
+                    Toast toast = Toast.makeText(getApplicationContext(), ERRORS.get(4), duration);
+                    toast.show();
+                }
             }
         });
 
@@ -200,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void showMywords() {
         List<String> dateList = dao.getListDate();
-        Log.d(TAG, "DATE is " + dateList.get(0));
         Context context = getApplicationContext();
         if (dateList.size() == 1) {
             allword.setText("Your words has been collected in " + dateList.size() + " day");
@@ -226,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         adapter = new DefinitionsAdapter(list, context);
         recyclerView.setAdapter(adapter);
-        Log.d(TAG, "Show data to recyclerview");
     }
 
     private void setupViewForMyWords(List<String> list, Context context) {
@@ -236,7 +236,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         allWordAdapter = new AllWordAdapter(list, context);
         recyclerView.setAdapter(allWordAdapter);
-        Log.d(TAG, "Show all date to recyclerview");
+    }
+
+    private void setupViewForDetails(List<WordDetail> list){
+        binderRecyclerView = (RecyclerView) findViewById(R.id.detailsRecyclerView);
+        binderRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binderRecyclerView.setHasFixedSize(true);
+        binderAdapter = new DetailsBindingAdapter(list);
+        binderRecyclerView.setAdapter(binderAdapter);
     }
 
 
@@ -247,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseDefinitions> call, Response<ResponseDefinitions> response) {
                 if (response != null & response.isSuccessful()) {
                     responseDefinitions = response.body();
-                    Log.d(TAG, "reponse message " + response.headers().hashCode());
 
                     RealmList<RealmDefinition> list = new RealmList<>();
                     for (int i = 0; i < responseDefinitions.getDefinitions().size(); i++) {
@@ -259,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
                     wordToday.setText("This word has " + list.size() + " definitions");
                     wordToday.setVisibility(View.VISIBLE);
                     setupView(list, context);
-                    Log.d(TAG, "Definitions määrä " + responseDefinitions.getDefinitions().size());
                     dao.insertDefinitions(responseDefinitions);
                 } else {
                     Toast toast = Toast.makeText(context, ERRORS.get(2), duration);
@@ -279,5 +284,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-
-

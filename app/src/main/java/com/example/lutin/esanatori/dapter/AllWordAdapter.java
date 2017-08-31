@@ -52,8 +52,10 @@ public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     compoundButton.setChecked(false);
                     selectedDate.remove(compoundButton.getText().toString().substring(0, 10));
                 }
+
                 ((AllWordViewHolder) holder).selectedTextView.setText(convertArrayToString(selectedDate));
-                //Log.d("SelectedDate ", ((AllWordViewHolder) holder).selectedTextView.getText().toString());
+
+
             }
         });
 
@@ -66,11 +68,15 @@ public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public String convertArrayToString(List<String> inputs) {
-        StringBuilder builderStr = new StringBuilder();
-        for (String input : inputs) {
-            builderStr.append(input);
-            builderStr.append(",");
+        try {
+            StringBuilder builderStr = new StringBuilder();
+            for (String input : inputs) {
+                builderStr.append(input);
+                builderStr.append(",");
+            }
+            return builderStr.toString().substring(0, builderStr.length() - 1);
+        } catch (Exception e) {
+            return null;
         }
-        return builderStr.toString().substring(0, builderStr.length() - 1);
     }
 }
