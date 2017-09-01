@@ -8,9 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +23,6 @@ import com.example.lutin.esanatori.model.RealmDefinitions;
 import com.example.lutin.esanatori.model.ResponseDefinitions;
 import com.example.lutin.esanatori.service.WordsAPIService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +30,8 @@ import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.example.lutin.esanatori.R.id.selectedDate;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,14 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private Button mywordsBtn;
     private Button deleteBtn;
     private Button deleteAllBtn;
-    private CheckBox dateCB;
-    private LinearLayout deleteLayout;
-    private String KEYWORD = "bump";
     private String TAG = "WordsAPI";
     private WordsAPIService apiService;
     private Call<ResponseDefinitions> responseDefinitionsCall;
     private ResponseDefinitions responseDefinitions;
     private RealmDefinitions realmDefinitions;
+    private TextView selectDateTextView;
+
     /*Variables for adding data to recyclerview*/
     private RecyclerView.LayoutManager layoutManager;
     private DefinitionDaoInterface dao = new DefinitionDao();
@@ -84,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
         searchBtn = (Button) findViewById(R.id.searchBtn);
         deleteBtn = (Button) findViewById(R.id.deleteBtn);
         deleteBtn.setVisibility(View.GONE);
-        deleteLayout = (LinearLayout) findViewById(R.id.definitionLayout);
-        //deleteLayout.setVisibility(View.GONE);
         deleteAllBtn = (Button) findViewById(R.id.deleteAllBtn);
         deleteAllBtn.setVisibility(View.GONE);
 
@@ -179,9 +175,10 @@ public class MainActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<String> selectedDate = getSelectedCheckbox(dao.getListDate());
-                if (selectedDate.size() == 0) {
-                    Log.d("Checkbox value is ",selectedDate.toString());
+                selectDateTextView = (TextView) findViewById(selectedDate);
+                String selectedDateStr = selectDateTextView.getText().toString();
+                String[] selectedDate = selectedDateStr.split(",");
+                if (selectedDate.length == 0) {
                     Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, ERRORS.get(3), duration);
                     toast.show();
@@ -199,19 +196,6 @@ public class MainActivity extends AppCompatActivity {
                 dao.clearDatabase();
             }
         });
-
-    }
-
-    public List<String> getSelectedCheckbox(List<String> items) {
-        final List<String> selectedList = new ArrayList<>();
-        dateCB = (CheckBox) findViewById(R.id.dateCheckBox);
-        for (int i = 0; i < items.size(); i++) {
-            boolean checked = dateCB.isChecked();
-            if(checked){
-                selectedList.add(dateCB.getText().toString().replaceAll(" ","").substring(0,10));
-            }
-        }
-        return selectedList;
     }
 
     public void showMywords(){

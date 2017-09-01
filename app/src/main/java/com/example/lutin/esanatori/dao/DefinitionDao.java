@@ -126,9 +126,9 @@ public class DefinitionDao implements DefinitionDaoInterface {
     }
 
     @Override
-    public void deleteDenifitionsByDate(List<String> dateList) {
+    public void deleteDenifitionsByDate(String[] dateArray) {
         realm.beginTransaction();
-        for (String date : dateList) {
+        for (String date : dateArray) {
             RealmResults<RealmDefinitions> results = realm.where(RealmDefinitions.class).contains("dateStr", date).findAll();
             results.deleteAllFromRealm();
             Log.d("This date ", date + " has been deleted");

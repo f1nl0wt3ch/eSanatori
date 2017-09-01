@@ -70,6 +70,7 @@
         android:visibility="visible"
         android:weightSum="100">
 
+
         <Button
             android:id="@+id/deleteBtn"
             android:layout_width="match_parent"

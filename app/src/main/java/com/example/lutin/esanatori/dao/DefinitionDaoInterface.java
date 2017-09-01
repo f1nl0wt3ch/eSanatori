@@ -32,7 +32,7 @@ public interface DefinitionDaoInterface {
 
     public List<String> getListDate();
 
-    public void deleteDenifitionsByDate(List<String> dateList);
+    public void deleteDenifitionsByDate(String[] dateList);
 
     public void clearDatabase();
 

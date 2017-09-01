@@ -1,7 +1,10 @@
 package com.example.lutin.esanatori.dapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.StringBuilderPrinter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,23 +41,39 @@ public class AllWordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         dao.open();
         String dateStr = dateList.get(position);
         ((AllWordViewHolder) holder).dateCheckBox.setText(dateStr+" [ "+dao.findWordsByDate(dateStr).size()+" words found ]");
         ((AllWordViewHolder) holder).dateCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked)
-                    ((AllWordViewHolder) holder).dateCheckBox.setChecked(true);
-                    ((AllWordViewHolder) holder).dateCheckBox.setChecked(false);
-            }
+                if(isChecked) {
+                    compoundButton.setChecked(true);
+                    selectedDate.add(compoundButton.getText().toString().substring(0,10));
+                }else {
+                    compoundButton.setChecked(false);
+                    selectedDate.remove(compoundButton.getText().toString().substring(0,10));
+                }
+                ((AllWordViewHolder) holder).selectedTextView.setText(convertArrayToString(selectedDate));
+                //Log.d("SelectedDate ", ((AllWordViewHolder) holder).selectedTextView.getText().toString());
+                            }
         });
+
 
     }
 
     @Override
     public int getItemCount() {
         return dateList.size();
+    }
+
+    public String convertArrayToString(List<String> inputs){
+        StringBuilder builderStr = new StringBuilder();
+        for(String input : inputs ){
+            builderStr.append(input);
+            builderStr.append(",");
+        }
+        return builderStr.toString().substring(0, builderStr.length()-1);
     }
 }
